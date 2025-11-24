@@ -63,6 +63,16 @@ const ActionButton = styled.button`
   }
 `;
 
+const LogoutButton = styled(ActionButton)`
+  color: #dc2626;
+  border-color: #dc2626;
+  
+  &:hover {
+    background-color: #dc2626;
+    color: white;
+    border-color: #dc2626;
+  }
+`;
 
 
 export const DashboardHeader: React.FC = () => {
@@ -81,7 +91,7 @@ export const DashboardHeader: React.FC = () => {
       <UserSection>
         <WelcomeText>Welcome, {user?.username}</WelcomeText>
         <ButtonGroup>
-          <ActionButton onClick={logout}>Logout</ActionButton>
+          <LogoutButton onClick={logout}>Logout</LogoutButton>
         </ButtonGroup>
       </UserSection>
     </HeaderContainer>
