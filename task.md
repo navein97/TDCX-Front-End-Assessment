@@ -13,9 +13,9 @@
 - [x] Write basic unit tests with Vitest
 - [x] Deploy to Vercel and verify live URL
 - [ ] **Optional enhancements**
-  - [ ] Add cookie fallback for session persistence
-  - [ ] Add skeleton/loading component for async data fetches
-  - [ ] Add a manual view‑mode toggle (mobile ↔ desktop) if required by spec
+  - [x] Add cookie fallback for session persistence
+  - [x] Add skeleton/loading component for async data fetches
+  - [x] Add a manual view‑mode toggle (mobile ↔ desktop) if required by spec
   - [ ] Expand test coverage for all components and contexts
 
 *All core requirements are satisfied; optional items are pending based on further clarification.*

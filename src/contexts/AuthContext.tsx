@@ -1,61 +1,57 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { User } from '../types/task';
+import { setCookie, getCookie, deleteCookie } from '../utils/cookie';
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string, password: string) => boolean;
+  login: (username: string) => void;
   logout: () => void;
   isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const SESSION_KEY = 'tdcx_session';
-
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  // Check for existing session on mount
   useEffect(() => {
-    const savedSession = sessionStorage.getItem(SESSION_KEY);
-    if (savedSession) {
-      try {
-        const userData = JSON.parse(savedSession);
-        setUser(userData);
-      } catch (error) {
-        console.error('Failed to parse session data:', error);
-        sessionStorage.removeItem(SESSION_KEY);
+    // Check sessionStorage first
+    const storedUser = sessionStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else {
+      // Fallback to cookie
+      const cookieUser = getCookie('tdcx_user');
+      if (cookieUser) {
+        const parsedUser = JSON.parse(cookieUser);
+        setUser(parsedUser);
+        // Sync back to sessionStorage
+        sessionStorage.setItem('user', cookieUser);
       }
     }
   }, []);
 
-  const login = (username: string, password: string): boolean => {
-    // Simple validation - in a real app, this would call an API
-    if (username.trim() && password.trim()) {
-      const userData: User = { username: username.trim() };
-      setUser(userData);
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify(userData));
-      return true;
-    }
-    return false;
+  const login = (username: string) => {
+    const newUser = { username };
+    setUser(newUser);
+    sessionStorage.setItem('user', JSON.stringify(newUser));
+    setCookie('tdcx_user', JSON.stringify(newUser), 1); // 1 day expiration
   };
 
   const logout = () => {
     setUser(null);
-    sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem('user');
+    deleteCookie('tdcx_user');
   };
 
-  const value: AuthContextType = {
-    user,
-    login,
-    logout,
-    isAuthenticated: !!user,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');

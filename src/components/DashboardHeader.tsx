@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
+import { ViewModeContext } from '../contexts/ViewModeContext';
 
-const Header = styled.header`
-  background: white;
-  padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.xl};
+const HeaderContainer = styled.header`
+  background-color: white;
   box-shadow: ${({ theme }) => theme.shadows.sm};
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,21 +15,17 @@ const Header = styled.header`
   z-index: 100;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+    padding: ${({ theme }) => theme.spacing.md};
   }
 `;
 
 const Logo = styled.div`
-  font-size: 24px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    font-size: 20px;
-  }
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 const UserSection = styled.div`
@@ -37,46 +34,69 @@ const UserSection = styled.div`
   gap: ${({ theme }) => theme.spacing.md};
 `;
 
-const Username = styled.span`
-  color: ${({ theme }) => theme.colors.text};
-  font-weight: 500;
-  display: none;
+const WelcomeText = styled.span`
+  color: ${({ theme }) => theme.colors.textLight};
+  font-size: 0.9rem;
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    display: inline;
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    display: none;
   }
 `;
 
-const LogoutButton = styled.button`
-  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme }) => theme.colors.danger};
-  color: white;
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  font-weight: 600;
-  font-size: 14px;
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.sm};
+`;
+
+const ActionButton = styled.button`
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.textLight};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  font-size: 0.875rem;
   transition: all ${({ theme }) => theme.transitions.fast};
 
   &:hover {
-    background: ${({ theme }) => theme.colors.dangerHover};
-    transform: translateY(-1px);
-    box-shadow: ${({ theme }) => theme.shadows.sm};
+    color: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.background};
   }
+`;
 
-  &:active {
-    transform: translateY(0);
+const ToggleButton = styled(ActionButton)`
+  color: ${({ theme }) => theme.colors.primary};
+  border-color: ${({ theme }) => theme.colors.primary};
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: white;
   }
 `;
 
 export const DashboardHeader: React.FC = () => {
   const { user, logout } = useAuth();
+  const { mode, toggleMode } = useContext(ViewModeContext);
 
   return (
-    <Header>
-      <Logo>TDCX</Logo>
+    <HeaderContainer>
+      <Logo>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="24" height="24" rx="4" fill="#6B46C1" />
+          <path d="M7 12L10 15L17 8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        TDCX
+      </Logo>
+      
       <UserSection>
-        {user && <Username>Welcome, {user.username}</Username>}
-        <LogoutButton onClick={logout}>Logout</LogoutButton>
+        <WelcomeText>Welcome, {user?.username}</WelcomeText>
+        <ButtonGroup>
+          <ToggleButton onClick={toggleMode}>
+            {mode === 'mobile' ? 'Desktop View' : 'Mobile View'}
+          </ToggleButton>
+          <ActionButton onClick={logout}>Logout</ActionButton>
+        </ButtonGroup>
       </UserSection>
-    </Header>
+    </HeaderContainer>
   );
 };

@@ -160,7 +160,7 @@ export const LoginPage: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -169,12 +169,8 @@ export const LoginPage: React.FC = () => {
       return;
     }
 
-    const success = login(username, password);
-    if (success) {
-      navigate('/dashboard', { replace: true });
-    } else {
-      setError('Invalid credentials');
-    }
+    login(username);
+    navigate('/dashboard', { replace: true });
   };
 
   return (

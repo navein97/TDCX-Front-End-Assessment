@@ -1,21 +1,23 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyles } from './styles/GlobalStyles';
-import { theme } from './styles/theme';
 import { AuthProvider } from './contexts/AuthContext';
 import { TaskProvider } from './contexts/TaskContext';
+import { ViewModeProvider, ViewModeContext } from './contexts/ViewModeContext';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { theme as defaultTheme } from './styles/theme';
 
-const App: React.FC = () => {
+const ThemedApp = () => {
+  const { themed } = useContext(ViewModeContext);
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themed || defaultTheme}>
       <GlobalStyles />
       <AuthProvider>
         <TaskProvider>
-          <BrowserRouter>
+          <Router>
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route
@@ -26,14 +28,21 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
             </Routes>
-          </BrowserRouter>
+          </Router>
         </TaskProvider>
       </AuthProvider>
     </ThemeProvider>
   );
 };
+
+function App() {
+  return (
+    <ViewModeProvider>
+      <ThemedApp />
+    </ViewModeProvider>
+  );
+}
 
 export default App;
