@@ -12,6 +12,7 @@ const FloatingButton = styled.button`
   color: white;
   font-size: 28px;
   font-weight: 300;
+  line-height: 1;
   box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
   transition: all ${({ theme }) => theme.transitions.normal};
   z-index: 999;
@@ -43,7 +44,9 @@ interface AddTaskButtonProps {
 export const AddTaskButton: React.FC<AddTaskButtonProps> = ({ onClick }) => {
   return (
     <FloatingButton onClick={onClick} aria-label="Add new task" title="Add new task">
-      +
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 5V19M5 12H19" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
+      </svg>
     </FloatingButton>
   );
 };

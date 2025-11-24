@@ -1,7 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
-import { ViewModeContext } from '../contexts/ViewModeContext';
 
 const HeaderContainer = styled.header`
   background-color: white;
@@ -64,19 +63,10 @@ const ActionButton = styled.button`
   }
 `;
 
-const ToggleButton = styled(ActionButton)`
-  color: ${({ theme }) => theme.colors.primary};
-  border-color: ${({ theme }) => theme.colors.primary};
-  
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primary};
-    color: white;
-  }
-`;
+
 
 export const DashboardHeader: React.FC = () => {
   const { user, logout } = useAuth();
-  const { mode, toggleMode } = useContext(ViewModeContext);
 
   return (
     <HeaderContainer>
@@ -91,9 +81,6 @@ export const DashboardHeader: React.FC = () => {
       <UserSection>
         <WelcomeText>Welcome, {user?.username}</WelcomeText>
         <ButtonGroup>
-          <ToggleButton onClick={toggleMode}>
-            {mode === 'mobile' ? 'Desktop View' : 'Mobile View'}
-          </ToggleButton>
           <ActionButton onClick={logout}>Logout</ActionButton>
         </ButtonGroup>
       </UserSection>
