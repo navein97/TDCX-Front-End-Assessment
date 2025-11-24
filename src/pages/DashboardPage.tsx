@@ -13,7 +13,7 @@ import { Skeleton } from '../components/Skeleton';
 
 const PageContainer = styled.div`
   min-height: 100vh;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: ${({ theme }) => theme.colors.backgroundGray};
 `;
 
 const MainContent = styled.main`
@@ -30,18 +30,15 @@ const MainContent = styled.main`
   }
 `;
 
-const ContentHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: ${({ theme }) => theme.spacing.md};
-`;
+const TaskSection = styled.section`
+  background: white;
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  padding: ${({ theme }) => theme.spacing.xl};
+  box-shadow: ${({ theme }) => theme.shadows.sm};
 
-const Title = styled.h1`
-  font-size: 1.5rem;
-  color: ${({ theme }) => theme.colors.text};
-  margin: 0;
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.lg};
+  }
 `;
 
 export const DashboardPage: React.FC = () => {
@@ -97,10 +94,6 @@ export const DashboardPage: React.FC = () => {
               <Skeleton height="120px" />
               <Skeleton height="120px" />
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
-              <Skeleton width="200px" height="40px" />
-              <Skeleton width="300px" height="40px" />
-            </div>
             <div style={{ marginTop: '1rem' }}>
               <Skeleton height="80px" margin="0 0 1rem 0" />
               <Skeleton height="80px" margin="0 0 1rem 0" />
@@ -109,20 +102,15 @@ export const DashboardPage: React.FC = () => {
           </>
         ) : (
           <>
-            {tasks.length > 0 && (
-              <>
-                <TaskStats />
-                <ContentHeader>
-                  <Title>Tasks</Title>
-                  <SearchBar />
-                </ContentHeader>
-              </>
-            )}
+            <TaskStats />
 
             {tasks.length === 0 ? (
               <EmptyState onAddTask={() => setIsModalOpen(true)} />
             ) : (
-              <TaskList onEditTask={handleEditTask} />
+              <TaskSection>
+                <SearchBar />
+                <TaskList onEditTask={handleEditTask} />
+              </TaskSection>
             )}
 
             <AddTaskButton onClick={() => setIsModalOpen(true)} />
