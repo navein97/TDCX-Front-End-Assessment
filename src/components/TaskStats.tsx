@@ -76,7 +76,13 @@ export const TaskStats: React.FC = () => {
 
       <StatCard color="#F5A623">
         <StatLabel>Latest Task</StatLabel>
-        <StatValue style={{ fontSize: '18px', lineHeight: '1.4' }}>
+        <StatValue style={{ 
+          fontSize: '18px', 
+          lineHeight: '1.4',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        }}>
           {stats.latestTask}
         </StatValue>
         <StatDescription>Most recently created</StatDescription>

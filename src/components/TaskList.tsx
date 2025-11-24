@@ -14,6 +14,9 @@ const NoResults = styled.div`
   padding: ${({ theme }) => theme.spacing.xxl};
   color: ${({ theme }) => theme.colors.textLight};
   font-size: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 interface TaskListProps {

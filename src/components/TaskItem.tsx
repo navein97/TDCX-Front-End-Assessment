@@ -33,6 +33,9 @@ const TaskName = styled.span<{ completed: boolean }>`
   color: ${({ theme, completed }) => completed ? theme.colors.textMuted : theme.colors.text};
   text-decoration: ${({ completed }) => completed ? 'line-through' : 'none'};
   transition: all ${({ theme }) => theme.transitions.fast};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const ActionButton = styled.button`
