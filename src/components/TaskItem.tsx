@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Task } from '../types/task';
 import { useTasks } from '../contexts/TaskContext';
+import { ConfirmModal } from './ConfirmModal';
 
 const TaskItemContainer = styled.div`
   background: white;
@@ -74,36 +75,56 @@ interface TaskItemProps {
 
 export const TaskItem: React.FC<TaskItemProps> = ({ task, onEdit }) => {
   const { toggleTaskComplete, deleteTask } = useTasks();
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleDelete = () => {
-    if (window.confirm(`Are you sure you want to delete "${task.name}"?`)) {
-      deleteTask(task.id);
-    }
+  const handleDeleteClick = () => {
+    setShowConfirm(true);
+  };
+
+  const handleConfirmDelete = () => {
+    deleteTask(task.id);
+    setShowConfirm(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirm(false);
   };
 
   return (
-    <TaskItemContainer>
-      <Checkbox
-        type="checkbox"
-        checked={task.completed}
-        onChange={() => toggleTaskComplete(task.id)}
-        aria-label={`Mark "${task.name}" as ${task.completed ? 'incomplete' : 'complete'}`}
+    <>
+      <TaskItemContainer>
+        <Checkbox
+          type="checkbox"
+          checked={task.completed}
+          onChange={() => toggleTaskComplete(task.id)}
+          aria-label={`Mark "${task.name}" as ${task.completed ? 'incomplete' : 'complete'}`}
+        />
+        <TaskName completed={task.completed}>{task.name}</TaskName>
+        <EditButton
+          onClick={() => onEdit(task.id, task.name)}
+          aria-label={`Edit "${task.name}"`}
+          title="Edit task"
+        >
+          ✏️
+        </EditButton>
+        <DeleteButton
+          onClick={handleDeleteClick}
+          aria-label={`Delete "${task.name}"`}
+          title="Delete task"
+        >
+          🗑️
+        </DeleteButton>
+      </TaskItemContainer>
+
+      <ConfirmModal
+        isOpen={showConfirm}
+        title="Delete Task"
+        message={`Are you sure you want to delete "${task.name}"? This action cannot be undone.`}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        confirmText="Delete"
+        cancelText="Cancel"
       />
-      <TaskName completed={task.completed}>{task.name}</TaskName>
-      <EditButton
-        onClick={() => onEdit(task.id, task.name)}
-        aria-label={`Edit "${task.name}"`}
-        title="Edit task"
-      >
-        ✏️
-      </EditButton>
-      <DeleteButton
-        onClick={handleDelete}
-        aria-label={`Delete "${task.name}"`}
-        title="Delete task"
-      >
-        🗑️
-      </DeleteButton>
-    </TaskItemContainer>
+    </>
   );
 };

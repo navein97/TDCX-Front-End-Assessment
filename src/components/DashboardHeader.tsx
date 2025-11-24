@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
 
-const HeaderContainer = styled.header`
-  background-color: white;
+const Header = styled.header`
+  background: white;
+  padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.xl};
   box-shadow: ${({ theme }) => theme.shadows.sm};
-  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,17 +14,21 @@ const HeaderContainer = styled.header`
   z-index: 100;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    padding: ${({ theme }) => theme.spacing.md};
+    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
   }
 `;
 
 const Logo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing.sm};
-  font-weight: bold;
-  font-size: 1.25rem;
-  color: ${({ theme }) => theme.colors.text};
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: 20px;
+  }
 `;
 
 const UserSection = styled.div`
@@ -33,67 +37,46 @@ const UserSection = styled.div`
   gap: ${({ theme }) => theme.spacing.md};
 `;
 
-const WelcomeText = styled.span`
-  color: ${({ theme }) => theme.colors.textLight};
-  font-size: 0.9rem;
+const Username = styled.span`
+  color: ${({ theme }) => theme.colors.text};
+  font-weight: 500;
+  display: none;
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    display: none;
+  @media (min-width: ${({ theme }) => theme.breakpoints.tablet}) {
+    display: inline;
   }
 `;
 
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.sm};
-`;
-
-const ActionButton = styled.button`
-  background-color: transparent;
-  color: ${({ theme }) => theme.colors.textLight};
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.md};
-  border-radius: ${({ theme }) => theme.borderRadius.sm};
-  font-size: 0.875rem;
+const LogoutButton = styled.button`
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme }) => theme.colors.danger};
+  color: white;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  font-weight: 600;
+  font-size: 14px;
   transition: all ${({ theme }) => theme.transitions.fast};
 
   &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-    border-color: ${({ theme }) => theme.colors.primary};
-    background-color: ${({ theme }) => theme.colors.background};
+    background: ${({ theme }) => theme.colors.dangerHover};
+    transform: translateY(-1px);
+    box-shadow: ${({ theme }) => theme.shadows.sm};
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
-
-const LogoutButton = styled(ActionButton)`
-  color: #dc2626;
-  border-color: #dc2626;
-  
-  &:hover {
-    background-color: #dc2626;
-    color: white;
-    border-color: #dc2626;
-  }
-`;
-
 
 export const DashboardHeader: React.FC = () => {
   const { user, logout } = useAuth();
 
   return (
-    <HeaderContainer>
-      <Logo>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="24" height="24" rx="4" fill="#6B46C1" />
-          <path d="M7 12L10 15L17 8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        TDCX
-      </Logo>
-      
+    <Header>
+      <Logo>TDCX</Logo>
       <UserSection>
-        <WelcomeText>Welcome, {user?.username}</WelcomeText>
-        <ButtonGroup>
-          <LogoutButton onClick={logout}>Logout</LogoutButton>
-        </ButtonGroup>
+        {user && <Username>Welcome, {user.username}</Username>}
+        <LogoutButton onClick={logout}>Logout</LogoutButton>
       </UserSection>
-    </HeaderContainer>
+    </Header>
   );
 };
